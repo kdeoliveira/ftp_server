@@ -1,4 +1,5 @@
 from ast import arg
+import pickle
 import socket as sok
 from threading import Thread
 from types import FunctionType
@@ -42,8 +43,9 @@ class TcpServer():
                 return None
             
             print(
-                addr, data, util.deserialize(data)
+                addr, data.hex(), pickle.loads(data)
                 )
+                # util.deserialize(data)
 
         print("No connection")
 

@@ -16,14 +16,16 @@ tcp_server = TcpServer("127.0.0.1")
 tcp_server.listen()
 
 
-parser = Message(3,  RequestType.CHANGE)
+
+
+# parser = Message(3,  RequestType.CHANGE)
 
 
 # parser.token(
 #     [4, 3]
 # )
 
-parser.parse("0101100111")
+# parser.parse("0101100111")
 
 
-print(      parser, ResponseType( "000" )     )
+# print(      parser, ResponseType( "000" )     )

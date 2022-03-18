@@ -20,7 +20,11 @@ class packet:
 
 
     def __call__(self, val : str) -> 'packet':
-        self.body = val
+        if len(val) != self.size:
+            raise ValueError("Incorrect size provided")
+
+        self.body = bitarray.bitarray(val)
+        return self
 
     def value(self) -> bitarray.bitarray:
         return self.body
@@ -33,10 +37,10 @@ class packet:
 
 
     def __str__(self) -> str:
-        return self.body.__str__()
+        return self.body.to01()
 
 
     def __repr__(self) -> str:
-        return self.body.__str__()
+        return self.body.to01()
 
     
