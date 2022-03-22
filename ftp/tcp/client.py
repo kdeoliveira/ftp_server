@@ -26,6 +26,7 @@ class TcpClient():
         self.ip_address = ip_addr
         self._is_connected = False
         self.create_message_functions : List[Tuple[MethodType, FunctionType] ] = []
+        self.on_response_functions: List[Tuple[MethodType, FunctionType]] = []
 
         signal.signal(signal.SIGINT, self.handler)
 
@@ -67,9 +68,7 @@ class TcpClient():
                             if(x[0] == cmd_format):
                                 self.socket.send( x[1](msg, cmd_format) )
                             
-
                             
-                        
                     except (AttributeError ,SyntaxError, IndexError) as e:
                         # print("Invalid message:", e)
                         # self.socket.send not necessary as the client application should be aware of the supported commands (eg. offline)
@@ -79,25 +78,18 @@ class TcpClient():
                     except OSError as e:
                         print("OS Error occured: ",e)
                         return
+                    except ValueError as e:
+                        print(e)
+                        continue
 
                     recv = self.socket.recv(self._MAX_BUFFER)
-
+                    
                     if recv:
                         res = self.check_response(recv)
-                        if res.type == ResponseType.OK_PUT_CHANGE:
-                            # print("got put/change request")
-                            continue
-                        elif res.type == ResponseType.OK_GET:
-                            print("got get request")
-                        elif res.type == ResponseType.HELP:
-                            val = Util.bit2byte(res)
-                            print(val[1].decode("utf-8"))
-                        elif res.type == ResponseType.ERROR_UNKNOWN:
-                            print("unknown command")
-                        elif res.type == ResponseType.ERROR_NOT_FOUND:
-                            print("file not found")
-                        elif res.type == ResponseType.ERROR_NO_CHANGE:
-                            print("operation failed")
+                        if type(res.type) is ResponseType:
+                            for x in self.on_response_functions:
+                                if res.type == x[0]:
+                                    x[1](res)
                         else:
                             self._is_connected = False
                     else:
@@ -110,9 +102,13 @@ class TcpClient():
         return Util.deserialize(data, MessageType.RESPONSE)
 
 
-    def on_send(self, *args: Callable[[List[str], MethodType], bytes]):
+    def on_send(self, *args: Tuple[ MethodType ,Callable[[List[str], MethodType], bytes]]):
         for x in args:
             self.create_message_functions.append(x)
+
+    def on_response(self, *args: Tuple[MethodType,  Callable[[Message], None ]] ):
+        for x in args:
+            self.on_response_functions.append(x)
 
     # def create_message(self, inp : List[str], type : RequestType) -> Message:
     #     message = Message(3, type)

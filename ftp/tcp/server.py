@@ -14,10 +14,13 @@ class TcpServer():
     _DEFAULT_PORT = 1025
     _MAX_BUFFER = 1024
 
-    def __init__(self, ip_addr) -> None:
+    def __init__(self, ip_addr, **kwargs) -> None:
         self.thread = None
         self.socket = sok.socket(sok.AF_INET, sok.SOCK_STREAM)
         self.socket.setsockopt(sok.SOL_SOCKET, sok.SO_REUSEADDR, 1)
+        for k,v in kwargs.items():
+            if "port" in k:
+                self._DEFAULT_PORT = int(v)
         self.socket.bind( (ip_addr, self._DEFAULT_PORT) )
         self.ip_address = ip_addr
         self.recv_functions : List[Tuple[RequestType, FunctionType]] = []

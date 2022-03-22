@@ -18,6 +18,8 @@ class Message:
 
         self.size = header_size
 
+        self.payload : packet or None = None
+
 
 
         self._token(
@@ -54,7 +56,18 @@ class Message:
 
         return (self.header, self.data)
 
+    def add_payload(self, value : str) -> None:
         
+        temp = bitarray.util.hex2ba( value.encode("utf-8").hex() ).to01()
+
+        self.payload = packet(len(temp))
+        self.payload(temp)
+
+    def has_payload(self) -> bool:
+        return self.payload is not None
+
+    
+
     def __repr__(self) -> str:
         temp = "["+ self.header.__str__() +"]"
         for x in self.data:
@@ -84,6 +97,12 @@ class Util:
             binary.extend(
                 x.body
             )
+        
+        if msg.has_payload():
+            binary.extend(
+                msg.payload.body
+            )
+
 
         return util.serialize(binary)
 
@@ -95,16 +114,35 @@ class Util:
         
         if type == MessageType.REQUEST:
             msg = Message(3, RequestType(temp.to01()[:3]))
-            msg.parse(
-                temp.to01()[3:]
-            )
+
+            if msg.type == RequestType.PUT:
+                msg.parse(
+                    temp.to01()[3:msg.size]
+                )
+                pk = packet(len(temp.to01()[msg.size:]))
+                pk(temp.to01()[msg.size:])
+                msg.payload = pk
+            else:
+                msg.parse(
+                    temp.to01()[3:]
+                )
+                
             return msg
 
         elif type == MessageType.RESPONSE:
             msg = Message(3, ResponseType(temp.to01()[:3]))
-            msg.parse(
-                temp.to01()[3:]
-            )
+            if msg.type == ResponseType.OK_GET:
+                msg.parse(
+                    temp.to01()[3:msg.size]
+                )
+                pk = packet(len(temp.to01()[msg.size:]))
+                pk(temp.to01()[msg.size:])
+                msg.payload = pk
+
+            else:
+                msg.parse(
+                    temp.to01()[3:]
+                )
         
             return msg
         
@@ -122,7 +160,7 @@ class Util:
         """
         val = val.strip()
 
-        data : bitarray.bitarray = util.hex2ba( val.encode("utf-8").hex() ).to01()
+        data : str = util.hex2ba( val.encode("utf-8").hex() ).to01()
 
         if(len(data) > size): raise ValueError("Value passed is too big")
 
@@ -153,7 +191,11 @@ class Util:
         temp : list[bytes] = []
         for x in msg.data:
             temp.append(
-                bitarray.bitarray(x.body).tobytes()
+                x.body.tobytes()
+            )
+        if msg.has_payload():
+            temp.append(
+                msg.payload.body.tobytes()
             )
 
         return temp

@@ -48,17 +48,22 @@ class ParserArgs:
 
 
 
-    def parameters(self, format : List[str] or None = None) -> list:
-        temp = []
+    def parameters(self, format : List[str] or None = None) -> dict:
+        temp = {}
 
         for i,x in enumerate(self.argv):
-            if format and x in format and i < self.argn - 1:
-                temp.append({
-                    x,
-                    self.argv[i + 1]
-                })
             if x in self.default_helper:
                 sys.exit(self._helper) if self._helper else 0
             elif x in self.default_version:
-                sys.exit(self._version) if self._version else 0        
+                sys.exit(self._version) if self._version else 0    
+
+            if format and x[0] == "-" and x not in format:
+                sys.exit("unknown option: "+x+"\n"+self._helper)
+
+            elif format and x in format and i < self.argn - 1:
+                temp.update({
+                    x: self.argv[i + 1]
+                })
+            
+    
         return temp
