@@ -1,8 +1,9 @@
 #!/usr/bin/python3.8
 
+
 import os
-import socket
-import sys
+from ftp.cmd import arguments
+
 from typing import List
 import bitarray
 from bitarray import util
@@ -13,10 +14,12 @@ from ftp.parser.packet import packet
 from ftp.parser.message_type import MessageType, MethodType, RequestType, ResponseType
 from ftp.tcp.client import TcpClient
 
-BASE_DIR = os.getcwd() + os.sep + "dir" + os.sep + "client" + os.sep
+client_dir = "client"
+
+BASE_DIR = os.getcwd() + os.sep + "dir" + os.sep + client_dir + os.sep
 
 
-client = TcpClient("127.0.0.1")
+
 
 def on_send_put(inp : List[str], type: MethodType) -> bytes:
     message = Message(3, type)
@@ -68,12 +71,6 @@ def on_send_help(inp : List[str], type: MethodType) -> bytes:
 
     return Util.serialize(message)
 
-client.on_send(
-    (RequestType.PUT, on_send_put),
-    (RequestType.GET, on_send_get),
-    (RequestType.CHANGE, on_send_change),
-    (RequestType.HELP, on_send_help),
-)
 
 
 def on_response_put_change(message : Message) :
@@ -116,16 +113,45 @@ def on_response_no_change(mesage : Message):
     print("operation failed")
 
 
-client.on_response(
+
+arg_helper = """usage: tcp_client [-a address] [-p port] [-f base_folder] [-F absolute_folder] [-v | --version] [-h | --help | -?]
+
+This are the commands used:
+\t-a address\t\t Set address of this client (default: 127.0.0.1)
+\t-p port\t\t\t Set port number of this client (default: 1025)
+\t-f base_folder\t\t Set relative base path of the FTP client (default: /dir/client)
+\t-F absolute_folder\t Set absolute base path of the FTP client (default: $pwd)"""
+
+
+
+if __name__ == "__main__":
+    cmd = arguments.ParserArgs(helper = arg_helper, version="tcp_server version 1.0")
+
+    cmd.get_args()
+
+    params = cmd.parameters(["-a", "-p", "-f", "-F"])
+
+    if "-f" in params:
+        client_dir = params["-f"]
+    elif "-F" in params:
+        BASE_DIR = params["-F"]
+
+
+    client = TcpClient("127.0.0.1", **params)
+
+    client.on_send(
+    (RequestType.PUT, on_send_put),
+    (RequestType.GET, on_send_get),
+    (RequestType.CHANGE, on_send_change),
+    (RequestType.HELP, on_send_help),
+    )
+
+    client.on_response(
     (ResponseType.OK_PUT_CHANGE, on_response_put_change),
     (ResponseType.OK_GET, on_response_get),
     (ResponseType.HELP, on_response_help),
     (ResponseType.ERROR_UNKNOWN, on_response_unknown),
     (ResponseType.ERROR_NOT_FOUND, on_response_not_found),
     (ResponseType.ERROR_NO_CHANGE, on_response_no_change),
-)
-client.connect()
-
-
-
-
+    )
+    client.connect()

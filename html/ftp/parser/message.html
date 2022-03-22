@@ -1,0 +1,1064 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>ftp.parser.message API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>ftp.parser.message</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import math
+from typing import List, Tuple
+
+import bitarray
+from bitarray import util
+from ftp.parser.message_type import MessageType, MethodType, RequestType, ResponseType
+
+from ftp.parser.packet import packet
+
+class Message:
+    def __init__(self, header_size : int, type: MethodType) -&gt; None:
+        &#34;&#34;&#34;
+        Encapsulates a packet object that is sent to the socket
+
+        message is represented as: [header | data_1 | data_2 | ... | payload?]
+
+        Parameters
+        ---
+        header_size: int
+            Size of the header packet
+        type: MethodType
+            Type of message that will be sent
+
+        Returns
+        ---
+        Returns nothing
+        &#34;&#34;&#34;
+        self.header = packet(header_size)
+        
+        self.data : list[packet] = []
+        self.type : MethodType = type
+
+        self.header(self.type.value)
+
+        self.size = header_size
+
+        self.payload : packet or None = None
+
+
+
+        self._token(
+            self.type.get_format()
+        )
+        
+    
+    def _token(self, format : List[int]):
+        &#34;&#34;&#34;
+        Internal function to include data into the message
+        &#34;&#34;&#34;
+        if len(format) == 0:
+            return None
+
+        
+        for x in format:
+            self.data.append(
+                packet(x)
+            )
+        
+        self.size += sum(format)
+        
+
+    def parse(self, value : str) -&gt; Tuple[packet, List[packet]] or None:
+        &#34;&#34;&#34;
+        Parses input values into its respective data field
+
+        Parameters
+        ---
+        value: str
+            Inserts the values its respective data. Note that value must be represented in binary format
+
+        Returns
+        ---
+        Returns a tuple containing the header packet and its data packets
+        &#34;&#34;&#34;
+        if(value.__len__ == 0 or len(value) &gt; self.size):
+            return None
+                       
+        if not len(self.data):
+            return None
+
+        ind = 0
+        
+        for i, x in enumerate(self.data):
+            x(value[ind :  ind + x.size ])            
+            ind += x.size
+
+
+        return (self.header, self.data)
+
+    def add_payload(self, value : str) -&gt; None:
+        &#34;&#34;&#34;
+        Attach payload to this message
+
+        Parameters
+        ---
+        value: str
+            Value to be parsed into packet. Note that value must be represented in binary format
+        &#34;&#34;&#34;
+        temp = bitarray.util.hex2ba( value.encode(&#34;utf-8&#34;).hex() ).to01()
+
+        self.payload = packet(len(temp))
+        self.payload(temp)
+
+    def has_payload(self) -&gt; bool:
+        &#34;&#34;&#34;
+        Verifies if this message has a payload attached
+
+        Returns
+        ---
+        Returns true if contains a paylaod; otherwise false
+        &#34;&#34;&#34;
+        return self.payload is not None
+
+    
+
+    def __repr__(self) -&gt; str:
+        temp = &#34;[&#34;+ self.header.__str__() +&#34;]&#34;
+        for x in self.data:
+            temp += x.__str__()
+        return  temp
+        
+    def __str__(self) -&gt; str:
+        temp = &#34;[&#34;+ self.header.__str__() +&#34;]&#34;
+        for x in self.data:
+            temp += x.__str__()
+        return  temp
+
+
+class Util:
+
+    @staticmethod
+    def serialize(msg : Message) -&gt; bytes:
+        &#34;&#34;&#34;
+        Serializes a Message object into bytes following its binary representation
+
+        Parameters
+        ---
+        msg: Message
+            Message object
+        
+        Returns
+        ---
+        Returns the extended byte representation of that message object
+        &#34;&#34;&#34;
+        binary : bitarray.bitarray = bitarray.bitarray(endian=&#34;big&#34;)
+        
+        binary.extend(
+            msg.header.body
+        )
+
+
+        for x in msg.data:
+            binary.extend(
+                x.body
+            )
+        
+        if msg.has_payload():
+            binary.extend(
+                msg.payload.body
+            )
+
+
+        return util.serialize(binary)
+
+
+    @staticmethod
+    def deserialize(binary : bytes, type : MessageType) -&gt; Message:
+        &#34;&#34;&#34;
+        Deserialize the byte value into a Message object
+
+        Parameters
+        ---
+        binary: bytes
+            Input byte object to be deserialized
+        type: MessageType
+            Type of message that is to be deserialized
+        
+        Returns
+        ---
+        Returns a message object        
+        &#34;&#34;&#34;
+        temp : bitarray.bitarray = util.deserialize(binary)
+        
+        if type == MessageType.REQUEST:
+            msg = Message(3, RequestType(temp.to01()[:3]))
+
+            if msg.type == RequestType.PUT:
+                msg.parse(
+                    temp.to01()[3:msg.size]
+                )
+                pk = packet(len(temp.to01()[msg.size:]))
+                pk(temp.to01()[msg.size:])
+                msg.payload = pk
+            else:
+                msg.parse(
+                    temp.to01()[3:]
+                )
+
+            return msg
+
+        elif type == MessageType.RESPONSE:
+            msg = Message(3, ResponseType(temp.to01()[:3]))
+            if msg.type == ResponseType.OK_GET:
+                msg.parse(
+                    temp.to01()[3:msg.size]
+                )
+                pk = packet(len(temp.to01()[msg.size:]))
+                pk(temp.to01()[msg.size:])
+                msg.payload = pk
+
+            else:
+                msg.parse(
+                    temp.to01()[3:]
+                )
+        
+            return msg
+        
+        else:
+            raise ValueError(&#34;Incorrect Message type&#34;)
+        
+
+
+
+    @staticmethod
+    def str2bit(val : str, size : int, with_count : bool = True, size_count : int or None = None ) -&gt; str:
+        &#34;&#34;&#34;
+        Converts a string value its equivalent binary representation in utf-8 encoding
+
+        Note that python does not use standard representation of variable size
+        Hence, manual conversion should be done
+
+        Parameters
+        ---
+        val: str
+            String to be converted
+        size: int
+            Size of the expected binary value
+        with_count: bool
+            Attach the binary represented size of paramters val
+        size_count: int
+            Size of the binary represented value for the portion representing the size of val
+        
+        Returns 
+        ---
+        Retuns a binary representation of the value passed
+        &#34;&#34;&#34;
+        val = val.strip()
+
+        data : str = util.hex2ba( val.encode(&#34;utf-8&#34;).hex() ).to01()
+
+        if(len(data) &gt; size): raise ValueError(&#34;Value passed is too big&#34;)
+
+
+        if(len(data) &lt; size):
+            for _ in range(0, size - len(data)):
+                data = &#34;0&#34; + data
+
+
+        if with_count:
+            count : int = util.int2ba(len(val)).to01()
+            
+            if size_count:
+                count_size = size_count
+            else:
+                count_size = int( math.log2( int(size / 8) ) ) 
+
+            if(len(count) &lt; count_size):
+                for _ in range(0, count_size - len(count)):
+                    count = &#34;0&#34; + count
+
+            return count + data
+        else:
+            return data
+    @staticmethod
+    def bit2byte(msg : Message) -&gt; List[bytes]:
+        &#34;&#34;&#34;
+        Converts a Message object to a list of byte equivalent values
+
+        Parameters
+        ---
+        msg: Message
+            Message object to be converted
+        
+        Returns
+        ---
+        List of bytes containing all packets encapsulated by the Message object
+        &#34;&#34;&#34;
+        temp : list[bytes] = []
+        for x in msg.data:
+            temp.append(
+                x.body.tobytes()
+            )
+        if msg.has_payload():
+            temp.append(
+                msg.payload.body.tobytes()
+            )
+
+        return temp</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="ftp.parser.message.Message"><code class="flex name class">
+<span>class <span class="ident">Message</span></span>
+<span>(</span><span>header_size: int, type: <a title="ftp.parser.message_type.MethodType" href="message_type.html#ftp.parser.message_type.MethodType">MethodType</a>)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Encapsulates a packet object that is sent to the socket</p>
+<p>message is represented as: [header | data_1 | data_2 | &hellip; | payload?]</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>header_size</code></strong> :&ensp;<code>int</code></dt>
+<dd>Size of the header packet</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code>MethodType</code></dt>
+<dd>Type of message that will be sent</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Returns nothing</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Message:
+    def __init__(self, header_size : int, type: MethodType) -&gt; None:
+        &#34;&#34;&#34;
+        Encapsulates a packet object that is sent to the socket
+
+        message is represented as: [header | data_1 | data_2 | ... | payload?]
+
+        Parameters
+        ---
+        header_size: int
+            Size of the header packet
+        type: MethodType
+            Type of message that will be sent
+
+        Returns
+        ---
+        Returns nothing
+        &#34;&#34;&#34;
+        self.header = packet(header_size)
+        
+        self.data : list[packet] = []
+        self.type : MethodType = type
+
+        self.header(self.type.value)
+
+        self.size = header_size
+
+        self.payload : packet or None = None
+
+
+
+        self._token(
+            self.type.get_format()
+        )
+        
+    
+    def _token(self, format : List[int]):
+        &#34;&#34;&#34;
+        Internal function to include data into the message
+        &#34;&#34;&#34;
+        if len(format) == 0:
+            return None
+
+        
+        for x in format:
+            self.data.append(
+                packet(x)
+            )
+        
+        self.size += sum(format)
+        
+
+    def parse(self, value : str) -&gt; Tuple[packet, List[packet]] or None:
+        &#34;&#34;&#34;
+        Parses input values into its respective data field
+
+        Parameters
+        ---
+        value: str
+            Inserts the values its respective data. Note that value must be represented in binary format
+
+        Returns
+        ---
+        Returns a tuple containing the header packet and its data packets
+        &#34;&#34;&#34;
+        if(value.__len__ == 0 or len(value) &gt; self.size):
+            return None
+                       
+        if not len(self.data):
+            return None
+
+        ind = 0
+        
+        for i, x in enumerate(self.data):
+            x(value[ind :  ind + x.size ])            
+            ind += x.size
+
+
+        return (self.header, self.data)
+
+    def add_payload(self, value : str) -&gt; None:
+        &#34;&#34;&#34;
+        Attach payload to this message
+
+        Parameters
+        ---
+        value: str
+            Value to be parsed into packet. Note that value must be represented in binary format
+        &#34;&#34;&#34;
+        temp = bitarray.util.hex2ba( value.encode(&#34;utf-8&#34;).hex() ).to01()
+
+        self.payload = packet(len(temp))
+        self.payload(temp)
+
+    def has_payload(self) -&gt; bool:
+        &#34;&#34;&#34;
+        Verifies if this message has a payload attached
+
+        Returns
+        ---
+        Returns true if contains a paylaod; otherwise false
+        &#34;&#34;&#34;
+        return self.payload is not None
+
+    
+
+    def __repr__(self) -&gt; str:
+        temp = &#34;[&#34;+ self.header.__str__() +&#34;]&#34;
+        for x in self.data:
+            temp += x.__str__()
+        return  temp
+        
+    def __str__(self) -&gt; str:
+        temp = &#34;[&#34;+ self.header.__str__() +&#34;]&#34;
+        for x in self.data:
+            temp += x.__str__()
+        return  temp</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="ftp.parser.message.Message.add_payload"><code class="name flex">
+<span>def <span class="ident">add_payload</span></span>(<span>self, value: str) ‑> None</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Attach payload to this message</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>value</code></strong> :&ensp;<code>str</code></dt>
+<dd>Value to be parsed into packet. Note that value must be represented in binary format</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def add_payload(self, value : str) -&gt; None:
+    &#34;&#34;&#34;
+    Attach payload to this message
+
+    Parameters
+    ---
+    value: str
+        Value to be parsed into packet. Note that value must be represented in binary format
+    &#34;&#34;&#34;
+    temp = bitarray.util.hex2ba( value.encode(&#34;utf-8&#34;).hex() ).to01()
+
+    self.payload = packet(len(temp))
+    self.payload(temp)</code></pre>
+</details>
+</dd>
+<dt id="ftp.parser.message.Message.has_payload"><code class="name flex">
+<span>def <span class="ident">has_payload</span></span>(<span>self) ‑> bool</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Verifies if this message has a payload attached</p>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Returns true if contains a paylaod; otherwise false</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def has_payload(self) -&gt; bool:
+    &#34;&#34;&#34;
+    Verifies if this message has a payload attached
+
+    Returns
+    ---
+    Returns true if contains a paylaod; otherwise false
+    &#34;&#34;&#34;
+    return self.payload is not None</code></pre>
+</details>
+</dd>
+<dt id="ftp.parser.message.Message.parse"><code class="name flex">
+<span>def <span class="ident">parse</span></span>(<span>self, value: str) ‑> Tuple[<a title="ftp.parser.packet.packet" href="packet.html#ftp.parser.packet.packet">packet</a>, List[<a title="ftp.parser.packet.packet" href="packet.html#ftp.parser.packet.packet">packet</a>]]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Parses input values into its respective data field</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>value</code></strong> :&ensp;<code>str</code></dt>
+<dd>Inserts the values its respective data. Note that value must be represented in binary format</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Returns a tuple containing the header packet and its data packets</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def parse(self, value : str) -&gt; Tuple[packet, List[packet]] or None:
+    &#34;&#34;&#34;
+    Parses input values into its respective data field
+
+    Parameters
+    ---
+    value: str
+        Inserts the values its respective data. Note that value must be represented in binary format
+
+    Returns
+    ---
+    Returns a tuple containing the header packet and its data packets
+    &#34;&#34;&#34;
+    if(value.__len__ == 0 or len(value) &gt; self.size):
+        return None
+                   
+    if not len(self.data):
+        return None
+
+    ind = 0
+    
+    for i, x in enumerate(self.data):
+        x(value[ind :  ind + x.size ])            
+        ind += x.size
+
+
+    return (self.header, self.data)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+<dt id="ftp.parser.message.Util"><code class="flex name class">
+<span>class <span class="ident">Util</span></span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Util:
+
+    @staticmethod
+    def serialize(msg : Message) -&gt; bytes:
+        &#34;&#34;&#34;
+        Serializes a Message object into bytes following its binary representation
+
+        Parameters
+        ---
+        msg: Message
+            Message object
+        
+        Returns
+        ---
+        Returns the extended byte representation of that message object
+        &#34;&#34;&#34;
+        binary : bitarray.bitarray = bitarray.bitarray(endian=&#34;big&#34;)
+        
+        binary.extend(
+            msg.header.body
+        )
+
+
+        for x in msg.data:
+            binary.extend(
+                x.body
+            )
+        
+        if msg.has_payload():
+            binary.extend(
+                msg.payload.body
+            )
+
+
+        return util.serialize(binary)
+
+
+    @staticmethod
+    def deserialize(binary : bytes, type : MessageType) -&gt; Message:
+        &#34;&#34;&#34;
+        Deserialize the byte value into a Message object
+
+        Parameters
+        ---
+        binary: bytes
+            Input byte object to be deserialized
+        type: MessageType
+            Type of message that is to be deserialized
+        
+        Returns
+        ---
+        Returns a message object        
+        &#34;&#34;&#34;
+        temp : bitarray.bitarray = util.deserialize(binary)
+        
+        if type == MessageType.REQUEST:
+            msg = Message(3, RequestType(temp.to01()[:3]))
+
+            if msg.type == RequestType.PUT:
+                msg.parse(
+                    temp.to01()[3:msg.size]
+                )
+                pk = packet(len(temp.to01()[msg.size:]))
+                pk(temp.to01()[msg.size:])
+                msg.payload = pk
+            else:
+                msg.parse(
+                    temp.to01()[3:]
+                )
+
+            return msg
+
+        elif type == MessageType.RESPONSE:
+            msg = Message(3, ResponseType(temp.to01()[:3]))
+            if msg.type == ResponseType.OK_GET:
+                msg.parse(
+                    temp.to01()[3:msg.size]
+                )
+                pk = packet(len(temp.to01()[msg.size:]))
+                pk(temp.to01()[msg.size:])
+                msg.payload = pk
+
+            else:
+                msg.parse(
+                    temp.to01()[3:]
+                )
+        
+            return msg
+        
+        else:
+            raise ValueError(&#34;Incorrect Message type&#34;)
+        
+
+
+
+    @staticmethod
+    def str2bit(val : str, size : int, with_count : bool = True, size_count : int or None = None ) -&gt; str:
+        &#34;&#34;&#34;
+        Converts a string value its equivalent binary representation in utf-8 encoding
+
+        Note that python does not use standard representation of variable size
+        Hence, manual conversion should be done
+
+        Parameters
+        ---
+        val: str
+            String to be converted
+        size: int
+            Size of the expected binary value
+        with_count: bool
+            Attach the binary represented size of paramters val
+        size_count: int
+            Size of the binary represented value for the portion representing the size of val
+        
+        Returns 
+        ---
+        Retuns a binary representation of the value passed
+        &#34;&#34;&#34;
+        val = val.strip()
+
+        data : str = util.hex2ba( val.encode(&#34;utf-8&#34;).hex() ).to01()
+
+        if(len(data) &gt; size): raise ValueError(&#34;Value passed is too big&#34;)
+
+
+        if(len(data) &lt; size):
+            for _ in range(0, size - len(data)):
+                data = &#34;0&#34; + data
+
+
+        if with_count:
+            count : int = util.int2ba(len(val)).to01()
+            
+            if size_count:
+                count_size = size_count
+            else:
+                count_size = int( math.log2( int(size / 8) ) ) 
+
+            if(len(count) &lt; count_size):
+                for _ in range(0, count_size - len(count)):
+                    count = &#34;0&#34; + count
+
+            return count + data
+        else:
+            return data
+    @staticmethod
+    def bit2byte(msg : Message) -&gt; List[bytes]:
+        &#34;&#34;&#34;
+        Converts a Message object to a list of byte equivalent values
+
+        Parameters
+        ---
+        msg: Message
+            Message object to be converted
+        
+        Returns
+        ---
+        List of bytes containing all packets encapsulated by the Message object
+        &#34;&#34;&#34;
+        temp : list[bytes] = []
+        for x in msg.data:
+            temp.append(
+                x.body.tobytes()
+            )
+        if msg.has_payload():
+            temp.append(
+                msg.payload.body.tobytes()
+            )
+
+        return temp</code></pre>
+</details>
+<h3>Static methods</h3>
+<dl>
+<dt id="ftp.parser.message.Util.bit2byte"><code class="name flex">
+<span>def <span class="ident">bit2byte</span></span>(<span>msg: <a title="ftp.parser.message.Message" href="#ftp.parser.message.Message">Message</a>) ‑> List[bytes]</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts a Message object to a list of byte equivalent values</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>msg</code></strong> :&ensp;<code><a title="ftp.parser.message.Message" href="#ftp.parser.message.Message">Message</a></code></dt>
+<dd>Message object to be converted</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>List</code> of <code>bytes containing all packets encapsulated by the <a title="ftp.parser.message.Message" href="#ftp.parser.message.Message">Message</a> object</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def bit2byte(msg : Message) -&gt; List[bytes]:
+    &#34;&#34;&#34;
+    Converts a Message object to a list of byte equivalent values
+
+    Parameters
+    ---
+    msg: Message
+        Message object to be converted
+    
+    Returns
+    ---
+    List of bytes containing all packets encapsulated by the Message object
+    &#34;&#34;&#34;
+    temp : list[bytes] = []
+    for x in msg.data:
+        temp.append(
+            x.body.tobytes()
+        )
+    if msg.has_payload():
+        temp.append(
+            msg.payload.body.tobytes()
+        )
+
+    return temp</code></pre>
+</details>
+</dd>
+<dt id="ftp.parser.message.Util.deserialize"><code class="name flex">
+<span>def <span class="ident">deserialize</span></span>(<span>binary: bytes, type: <a title="ftp.parser.message_type.MessageType" href="message_type.html#ftp.parser.message_type.MessageType">MessageType</a>) ‑> <a title="ftp.parser.message.Message" href="#ftp.parser.message.Message">Message</a></span>
+</code></dt>
+<dd>
+<div class="desc"><p>Deserialize the byte value into a Message object</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>binary</code></strong> :&ensp;<code>bytes</code></dt>
+<dd>Input byte object to be deserialized</dd>
+<dt><strong><code>type</code></strong> :&ensp;<code>MessageType</code></dt>
+<dd>Type of message that is to be deserialized</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Returns a message object</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def deserialize(binary : bytes, type : MessageType) -&gt; Message:
+    &#34;&#34;&#34;
+    Deserialize the byte value into a Message object
+
+    Parameters
+    ---
+    binary: bytes
+        Input byte object to be deserialized
+    type: MessageType
+        Type of message that is to be deserialized
+    
+    Returns
+    ---
+    Returns a message object        
+    &#34;&#34;&#34;
+    temp : bitarray.bitarray = util.deserialize(binary)
+    
+    if type == MessageType.REQUEST:
+        msg = Message(3, RequestType(temp.to01()[:3]))
+
+        if msg.type == RequestType.PUT:
+            msg.parse(
+                temp.to01()[3:msg.size]
+            )
+            pk = packet(len(temp.to01()[msg.size:]))
+            pk(temp.to01()[msg.size:])
+            msg.payload = pk
+        else:
+            msg.parse(
+                temp.to01()[3:]
+            )
+
+        return msg
+
+    elif type == MessageType.RESPONSE:
+        msg = Message(3, ResponseType(temp.to01()[:3]))
+        if msg.type == ResponseType.OK_GET:
+            msg.parse(
+                temp.to01()[3:msg.size]
+            )
+            pk = packet(len(temp.to01()[msg.size:]))
+            pk(temp.to01()[msg.size:])
+            msg.payload = pk
+
+        else:
+            msg.parse(
+                temp.to01()[3:]
+            )
+    
+        return msg
+    
+    else:
+        raise ValueError(&#34;Incorrect Message type&#34;)</code></pre>
+</details>
+</dd>
+<dt id="ftp.parser.message.Util.serialize"><code class="name flex">
+<span>def <span class="ident">serialize</span></span>(<span>msg: <a title="ftp.parser.message.Message" href="#ftp.parser.message.Message">Message</a>) ‑> bytes</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Serializes a Message object into bytes following its binary representation</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>msg</code></strong> :&ensp;<code><a title="ftp.parser.message.Message" href="#ftp.parser.message.Message">Message</a></code></dt>
+<dd>Message object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>Returns the extended byte representation</code> of <code>that message object</code></dt>
+<dd>&nbsp;</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def serialize(msg : Message) -&gt; bytes:
+    &#34;&#34;&#34;
+    Serializes a Message object into bytes following its binary representation
+
+    Parameters
+    ---
+    msg: Message
+        Message object
+    
+    Returns
+    ---
+    Returns the extended byte representation of that message object
+    &#34;&#34;&#34;
+    binary : bitarray.bitarray = bitarray.bitarray(endian=&#34;big&#34;)
+    
+    binary.extend(
+        msg.header.body
+    )
+
+
+    for x in msg.data:
+        binary.extend(
+            x.body
+        )
+    
+    if msg.has_payload():
+        binary.extend(
+            msg.payload.body
+        )
+
+
+    return util.serialize(binary)</code></pre>
+</details>
+</dd>
+<dt id="ftp.parser.message.Util.str2bit"><code class="name flex">
+<span>def <span class="ident">str2bit</span></span>(<span>val: str, size: int, with_count: bool = True, size_count: int = None) ‑> str</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Converts a string value its equivalent binary representation in utf-8 encoding</p>
+<p>Note that python does not use standard representation of variable size
+Hence, manual conversion should be done</p>
+<h2 id="parameters">Parameters</h2>
+<dl>
+<dt><strong><code>val</code></strong> :&ensp;<code>str</code></dt>
+<dd>String to be converted</dd>
+<dt><strong><code>size</code></strong> :&ensp;<code>int</code></dt>
+<dd>Size of the expected binary value</dd>
+<dt><strong><code>with_count</code></strong> :&ensp;<code>bool</code></dt>
+<dd>Attach the binary represented size of paramters val</dd>
+<dt><strong><code>size_count</code></strong> :&ensp;<code>int</code></dt>
+<dd>Size of the binary represented value for the portion representing the size of val</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<p>Retuns a binary representation of the value passed</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">@staticmethod
+def str2bit(val : str, size : int, with_count : bool = True, size_count : int or None = None ) -&gt; str:
+    &#34;&#34;&#34;
+    Converts a string value its equivalent binary representation in utf-8 encoding
+
+    Note that python does not use standard representation of variable size
+    Hence, manual conversion should be done
+
+    Parameters
+    ---
+    val: str
+        String to be converted
+    size: int
+        Size of the expected binary value
+    with_count: bool
+        Attach the binary represented size of paramters val
+    size_count: int
+        Size of the binary represented value for the portion representing the size of val
+    
+    Returns 
+    ---
+    Retuns a binary representation of the value passed
+    &#34;&#34;&#34;
+    val = val.strip()
+
+    data : str = util.hex2ba( val.encode(&#34;utf-8&#34;).hex() ).to01()
+
+    if(len(data) &gt; size): raise ValueError(&#34;Value passed is too big&#34;)
+
+
+    if(len(data) &lt; size):
+        for _ in range(0, size - len(data)):
+            data = &#34;0&#34; + data
+
+
+    if with_count:
+        count : int = util.int2ba(len(val)).to01()
+        
+        if size_count:
+            count_size = size_count
+        else:
+            count_size = int( math.log2( int(size / 8) ) ) 
+
+        if(len(count) &lt; count_size):
+            for _ in range(0, count_size - len(count)):
+                count = &#34;0&#34; + count
+
+        return count + data
+    else:
+        return data</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="ftp.parser" href="index.html">ftp.parser</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="ftp.parser.message.Message" href="#ftp.parser.message.Message">Message</a></code></h4>
+<ul class="">
+<li><code><a title="ftp.parser.message.Message.add_payload" href="#ftp.parser.message.Message.add_payload">add_payload</a></code></li>
+<li><code><a title="ftp.parser.message.Message.has_payload" href="#ftp.parser.message.Message.has_payload">has_payload</a></code></li>
+<li><code><a title="ftp.parser.message.Message.parse" href="#ftp.parser.message.Message.parse">parse</a></code></li>
+</ul>
+</li>
+<li>
+<h4><code><a title="ftp.parser.message.Util" href="#ftp.parser.message.Util">Util</a></code></h4>
+<ul class="">
+<li><code><a title="ftp.parser.message.Util.bit2byte" href="#ftp.parser.message.Util.bit2byte">bit2byte</a></code></li>
+<li><code><a title="ftp.parser.message.Util.deserialize" href="#ftp.parser.message.Util.deserialize">deserialize</a></code></li>
+<li><code><a title="ftp.parser.message.Util.serialize" href="#ftp.parser.message.Util.serialize">serialize</a></code></li>
+<li><code><a title="ftp.parser.message.Util.str2bit" href="#ftp.parser.message.Util.str2bit">str2bit</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>

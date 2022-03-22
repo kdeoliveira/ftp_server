@@ -1,4 +1,7 @@
-import os
+"""
+TCP socket interface representing FTP client
+"""
+
 import socket as sok
 import sys
 from threading import Thread, local
@@ -12,17 +15,33 @@ from ftp.parser.message_type import MessageType, MethodType, RequestType, Respon
 import signal
 
 
-BASE_DIR = os.getcwd() + os.sep + "dir" + os.sep + "client"
 
 
 class TcpClient():
     _DEFAULT_PORT = 1025
     _MAX_BUFFER = 512
 
-    def __init__(self, ip_addr) -> None:
+    def __init__(self, ip_addr, **kwargs) -> None:
+        """
+        TCP Client interface that creates a new socket given the ip address provided for FTP communication
+
+        Parameters
+        ---
+        ip_addr: str
+            IP address which the TCP service would be listening to
+        -p: int
+            port value which socket will bind its connection
+        -a: str
+            new IP address that TCP service will be using
+        
+        """
         self.thread = None
         self.socket = sok.socket(sok.AF_INET, sok.SOCK_STREAM)
-
+        for k,v in kwargs.items():
+            if "-p" in k:
+                self._DEFAULT_PORT = int(v)
+            elif "-a" in k:
+                ip_addr = v
         self.ip_address = ip_addr
         self._is_connected = False
         self.create_message_functions : List[Tuple[MethodType, FunctionType] ] = []
@@ -32,6 +51,10 @@ class TcpClient():
 
 
     def connect(self):
+        """
+        Creates a TCP socket bounded to the given IP address and port provided. 
+        Object creates a new thread where each new connection will respond to
+        """
         try:
             
             self.socket.connect( (self.ip_address, self._DEFAULT_PORT) )
@@ -52,6 +75,10 @@ class TcpClient():
 
     
     def handle_connection(self):
+        """
+        Internal function which handles all single client-server communication
+        Method is responsible for parsing any incoming and outgoing message sent through the TCP socket
+        """
         lcls = locals()
         cmd_format : RequestType or None = None
         while self._is_connected:
@@ -61,17 +88,15 @@ class TcpClient():
                     try:
                         exec("cmd_format_lcls = RequestType.%s" % msg[0].upper(), globals(), lcls)
                         cmd_format = lcls["cmd_format_lcls"]
-                        
-                        # data : Optional[bytes] = None
-
                         for x in self.create_message_functions:
                             if(x[0] == cmd_format):
                                 self.socket.send( x[1](msg, cmd_format) )
-                            
-                            
                     except (AttributeError ,SyntaxError, IndexError) as e:
                         # print("Invalid message:", e)
                         # self.socket.send not necessary as the client application should be aware of the supported commands (eg. offline)
+                        if msg[0] == "bye":
+                            raise KeyboardInterrupt()
+
                         self.socket.send(
                             " ".join(msg).encode("utf-8")
                         )
@@ -99,31 +124,50 @@ class TcpClient():
                 return
 
     def check_response(self, data : bytes) -> Message:
+        """
+        Deserialize the incoming message
+
+        Parameters
+        ---
+        data: bytes
+            Byte object received by the socket
+        
+        Returns
+        ---
+        Deserialized message object
+        """
         return Util.deserialize(data, MessageType.RESPONSE)
 
 
     def on_send(self, *args: Tuple[ MethodType ,Callable[[List[str], MethodType], bytes]]):
+        """
+        Attach a callback that is called when a message is sent
+
+        Parameters
+        ---
+        *args: List[Tuple[ MethodType ,Callable[[List[str], MethodType], bytes]]]
+            List of callable objects containing its Method type and respective callback function
+        """
         for x in args:
             self.create_message_functions.append(x)
 
     def on_response(self, *args: Tuple[MethodType,  Callable[[Message], None ]] ):
+        """
+        Attach a callback that is called when a message is received
+
+        Parameters
+        ---
+        *args: List[Tuple[MethodType,  Callable[[Message], None ]]]
+            List of callable objects containing its Method type and respective callback function
+        """
         for x in args:
             self.on_response_functions.append(x)
 
-    # def create_message(self, inp : List[str], type : RequestType) -> Message:
-    #     message = Message(3, type)
-
-    #     if type == RequestType.PUT:
-    #         file_data = Util.str2bit(inp[1], message.data[1].size, with_count=True)
-    #         file_size = "00000000000000000000000000000000"
-
-    #         message.parse(
-    #             file_data + file_size
-    #         )
-
-    #     return message
 
     def cin(self) -> List[str]:
+        """
+        Reads stdin from command-line. By default prints 'ftp>' before reading input
+        """
         try:
             msg = input("ftp> ")
             return msg.strip().split()
@@ -133,6 +177,10 @@ class TcpClient():
 
 
     def handler(self, signum , frame):
+        """
+        Internal funtion used to define a signal handler that is called when a SIGINT signal is raised by this process
+        """
+        
         #stdin is locking. Hence after SIGINT the application will still hang
         #probable solution would be implementing the thread as daemon
 

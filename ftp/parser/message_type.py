@@ -5,6 +5,9 @@ from typing import List
 
 
 class MessageType(enum.Enum):
+    """
+    Enum class for type of message sent
+    """
     REQUEST = 0
     RESPONSE = 1
 
@@ -15,6 +18,12 @@ class MethodType(enum.Enum):
     
 
 class RequestType(MethodType):
+    """
+    Enum class for type of Request sent
+
+    get_format(): List[int]
+        returns the format of the given method type
+    """
     PUT = "000"
     GET = "001"
     CHANGE = "010"
@@ -33,6 +42,12 @@ class RequestType(MethodType):
             return []
 
 class ResponseType(MethodType):
+    """
+    Enum class for type of Response sent
+
+    get_format(): List[int]
+        returns the format of the given method type
+    """
     OK_PUT_CHANGE = "000"
     OK_GET = "001"
     ERROR_NOT_FOUND = "010"

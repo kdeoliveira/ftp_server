@@ -1,3 +1,4 @@
+
 #!/usr/bin/python3.8
 from io import BytesIO
 import locale
@@ -12,10 +13,10 @@ from ftp.parser.message import Message, Util
 from ftp.tcp.server import TcpServer
 
 
+server_dir = "server"
 
 
-
-BASE_DIR = os.getcwd() + os.sep + "dir" + os.sep + "server" + os.sep
+BASE_DIR = os.getcwd() + os.sep + "dir" + os.sep + server_dir + os.sep
 
 
 
@@ -111,10 +112,7 @@ def on_receive_change(addr, data : Message) -> bytes:
 
     return response_ok()
 
-def on_receive_help(addr, data : Message) -> bytes:
-    result = Util.bit2byte(data)
-    print("Help received: ", result)
-    
+def on_receive_help(addr, data : Message) -> bytes:    
     return response_ok_help()
 
 
@@ -125,18 +123,25 @@ arg_helper = """usage: tcp_server [-a address] [-p port] [-f base_folder] [-F ab
 This are the commands used:
 \t-a address\t\t Set address of this server (default: 127.0.0.1)
 \t-p port\t\t\t Set port number of this server (default: 1025)
-\t-f base_folder\t\t Set relative base path of the FTP server (default: /dir/client)
+\t-f base_folder\t\t Set relative base path of the FTP server (default: /dir/server)
 \t-F absolute_folder\t Set absolute base path of the FTP server (default: $pwd)"""
 
 if __name__ == "__main__":
 
-    cmd = arguments.ParserArgs(2, helper = arg_helper, version="tcp_server version 1.0")
+    cmd = arguments.ParserArgs(helper = arg_helper, version="tcp_server version 1.0")
 
     cmd.get_args()
 
     params = cmd.parameters(["-a", "-p", "-f", "-F"])
+
+    if "-f" in params:
+        server_dir = params["-f"]
+    elif "-F" in params:
+        BASE_DIR = params["-F"]
     
-    tcp_server = TcpServer("127.0.0.1", port=params["-p"])
+    tcp_server = TcpServer("127.0.0.1", **params)
+
+    
 
     tcp_server.on_receive(
     (RequestType.PUT , on_receive_put),

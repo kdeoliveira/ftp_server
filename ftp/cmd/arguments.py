@@ -2,7 +2,6 @@
 import sys
 from types import FunctionType
 from typing import List, Tuple
-from xmlrpc.client import boolean
 
 
 
@@ -13,12 +12,25 @@ class ParserArgs:
     default_version = ["-v", "--version"]
 
 
-    def __init__(self, max : int, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
+        """
+        Parse arguments passed in command-line
+
+        Parameters
+        ----------
+        helper: str
+            Helper message to be displayed
+        version: str
+            Version message to be displayed 
+
+        Returns
+        ----------
+        returns: None
+        """
         self.argv : list = []
         self.argn : int = 0
         self._helper : str = ""
 
-        self._max_args : int = max
 
         if kwargs.__len__ == 0 :
             return
@@ -27,13 +39,21 @@ class ParserArgs:
         self._version = kwargs.get("version")
 
         
-
-        
-
-
-
-
     def get_args(self, args : List[str] or None = None) -> Tuple[list, int]:
+        """
+        Get either arguments passed to parameter args or directly from sys.argv
+        
+        Parameters
+        ----------
+        args: List[str]
+            List of arguments to be parsed
+
+        Returns
+        ----------
+        return: Tuple[list, int]
+            Tuple containg arguments and its length
+        """
+
         if args is None or args.__len__ <= 1 :
             self.argv = sys.argv[1:]
             self.argn = len(sys.argv)
@@ -49,6 +69,19 @@ class ParserArgs:
 
 
     def parameters(self, format : List[str] or None = None) -> dict:
+        """
+        List of accepted parameters on command-line
+
+        Paramters
+        ----------
+        format: List[str]
+            List of accepted parameters
+
+        Returns 
+        ----------
+        return: dict
+            Dictionary containing paramters and respective values
+        """
         temp = {}
 
         for i,x in enumerate(self.argv):
