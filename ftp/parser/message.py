@@ -179,6 +179,7 @@ class Util:
         ---
         Returns a message object        
         """
+
         temp : bitarray.bitarray = util.deserialize(binary)
         
         if type == MessageType.REQUEST:
