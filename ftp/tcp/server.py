@@ -84,6 +84,9 @@ class TcpServer():
         print("""> New connection {addr}:{port}""".format(addr = addr[0], port=addr[1]))
         while self.is_connected:
             try:
+                # TODO: Socket is only able to receive MAX_BUFFER;
+                #       Therefore, ensure that maximum packet sent is no longer then _MAX_BUFFER or set socket to nonblocking -> socket.setblocking(False)
+                #       Otherwise, wait for any possible subsequent packet receival (parallel or different loop)                
                 data = conn.recv(self._MAX_BUFFER)
                 if not data:
                     return None

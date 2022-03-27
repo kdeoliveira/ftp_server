@@ -1,4 +1,3 @@
-
 #!/usr/bin/python3.8
 from io import BytesIO
 import locale

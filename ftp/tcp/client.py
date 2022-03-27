@@ -106,22 +106,33 @@ class TcpClient():
                     except ValueError as e:
                         print(e)
                         continue
-
+                    
+                    # TODO: Socket is only able to receive MAX_BUFFER;
+                    #       Therefore, ensure that maximum packet sent is no longer then _MAX_BUFFER or set socket to nonblocking -> socket.setblocking(False)
+                    #       Otherwise, wait for any possible subsequent packet receival (parallel or different loop)                
                     recv = self.socket.recv(self._MAX_BUFFER)
+
+
+
+                    print("out")
                     
                     if recv:
+                        
                         res = self.check_response(recv)
                         if type(res.type) is ResponseType:
                             for x in self.on_response_functions:
                                 if res.type == x[0]:
                                     x[1](res)
                         else:
-                            self._is_connected = False
+                            self._is_connected = False 
                     else:
                         self._is_connected = False
 
             except (KeyboardInterrupt, OSError):
                 return
+            except ValueError as e:
+                #TODO: In case of large incming packet, self.socke.recv will raise an Exception for invalid header byte
+                print("invalid response", e)
 
     def check_response(self, data : bytes) -> Message:
         """
