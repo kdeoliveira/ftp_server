@@ -22,7 +22,7 @@ server directory. We should be able to transfer any file type such as txt, doc, 
 - Required packages installed
 
 
-### Running on QNX VM 
+### Running
 Before execution, make sure the main directory for both server and client are created  
 
 To run the server: ``tcp_server.py``  
