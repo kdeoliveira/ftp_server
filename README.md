@@ -4,9 +4,11 @@
 </p>
 
 
-## Real Time Application of Vehicule Monitoring System
-This project involves all or part of the design, implementation, testing, and analysis of a simplified
-real-time system for monitoring of vehicle’s health conditions.
+## Network Application Development for File Transfer Service 
+Develop a pair of client-server programs that communicate via Python stream sockets and simulate partially the
+file transfer protocol (FTP). The main purpose of these client/server programs is to give the client the ability to
+download files from the server directory to the client directory and upload files from the client directory to the
+server directory. We should be able to transfer any file type such as txt, doc, jpg.
 
 ### Overview
 
