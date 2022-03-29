@@ -15,7 +15,6 @@ server directory. We should be able to transfer any file type such as txt, doc, 
 - The application consist of two parts, an FTP Client and FTP Server
 - The main purpose of these client/server programs is to give the client the ability to download files from the server directory to the client directory and upload files from the client directory to the server directory
 - All required packages for this project are provided in the requirement text file
-- Note that in order to built the GUI using GCC, the proper qmake tool needs to be generated from the Qt source files.
 
 ### Requirements
 - Python 3
