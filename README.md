@@ -1,6 +1,6 @@
 <p align="center"> 
-  <img src="https://cdn3.iconfinder.com/data/icons/logos-and-brands-adobe/512/267_Python-512.png" alt="py"/>
-  <img src="https://w7.pngwing.com/pngs/911/358/png-transparent-file-transfer-protocol-ftps-pdf-release-miscellaneous-blue-angle-thumbnail.png" width="100" alt="ftp">
+  <img src="https://cdn3.iconfinder.com/data/icons/logos-and-brands-adobe/512/267_Python-512.png" width="100" alt="py"/>
+  <img src="https://blitapp.com/blog/articles/save-web-captures-to-ftp-server/ftp.png" width="100" alt="ftp">
 </p>
 
 
