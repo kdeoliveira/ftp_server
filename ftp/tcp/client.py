@@ -4,7 +4,7 @@ TCP socket interface representing FTP client
 
 import socket as sok
 import sys
-from threading import Thread, local
+from threading import Thread
 from types import FunctionType
 from typing import Callable, List, Optional, Tuple
 from unittest import result
@@ -19,7 +19,7 @@ import signal
 
 class TcpClient():
     _DEFAULT_PORT = 1025
-    _MAX_BUFFER = 512
+    _MAX_BUFFER = 4096
 
     def __init__(self, ip_addr, **kwargs) -> None:
         """
@@ -35,13 +35,17 @@ class TcpClient():
             new IP address that TCP service will be using
         
         """
+        self._debug = False
         self.thread = None
         self.socket = sok.socket(sok.AF_INET, sok.SOCK_STREAM)
+
         for k,v in kwargs.items():
             if "-p" in k:
                 self._DEFAULT_PORT = int(v)
             elif "-a" in k:
                 ip_addr = v
+            elif "-d" in k:
+                self._debug = True
         self.ip_address = ip_addr
         self._is_connected = False
         self.create_message_functions : List[Tuple[MethodType, FunctionType] ] = []
@@ -69,7 +73,7 @@ class TcpClient():
             print("Unable to connect to server, try again")
         except KeyboardInterrupt:
             self.socket.close()
-            self._is_connected = False
+            self._is_connected = False            
         except Exception:
             return
 
@@ -81,19 +85,27 @@ class TcpClient():
         """
         lcls = locals()
         cmd_format : RequestType or None = None
+        if self._debug:
+            print("Debug mode ON")
         while self._is_connected:
             try:
                 msg = self.cin()
                 if len(msg):
                     try:
+                        # Dynamically converts the input string to local MethodType variable 
                         exec("cmd_format_lcls = RequestType.%s" % msg[0].upper(), globals(), lcls)
                         cmd_format = lcls["cmd_format_lcls"]
                         for x in self.create_message_functions:
                             if(x[0] == cmd_format):
-                                self.socket.send( x[1](msg, cmd_format) )
+                                _data_send = x[1](msg, cmd_format)
+                                if self._debug:
+                                    print("[DEBUG]", _data_send)
+
+                                self.socket.send( _data_send )
                     except (AttributeError ,SyntaxError, IndexError) as e:
                         # print("Invalid message:", e)
                         # self.socket.send not necessary as the client application should be aware of the supported commands (eg. offline)
+                        # However, due to requirements empty message is sent
                         if msg[0] == "bye":
                             raise KeyboardInterrupt()
 
@@ -107,15 +119,15 @@ class TcpClient():
                         print(e)
                         continue
                     
-                    # TODO: Socket is only able to receive MAX_BUFFER;
-                    #       Therefore, ensure that maximum packet sent is no longer then _MAX_BUFFER or set socket to nonblocking -> socket.setblocking(False)
-                    #       Otherwise, wait for any possible subsequent packet receival (parallel or different loop)                
+                    # Socket is only able to receive MAX_BUFFER;
+                    # In order to guarantee efficiency of sockets, longer buffers will be stripped to fit the maximum sendable buffer size
+                    # Therefore, ensure that maximum packet sent is no longer then _MAX_BUFFER or set socket to nonblocking -> socket.setblocking(False)
+                    # Otherwise, wait for any possible subsequent packet receival (parallel or different loop)
+                                
                     recv = self.socket.recv(self._MAX_BUFFER)
 
-
-
-                    print("out")
-                    
+                    if self._debug:
+                        print("[DEBUG]", recv)
                     if recv:
                         
                         res = self.check_response(recv)
@@ -177,7 +189,8 @@ class TcpClient():
 
     def cin(self) -> List[str]:
         """
-        Reads stdin from command-line. By default prints 'ftp>' before reading input
+        Reads stdin from command-line. By default prints 'ftp>' before reading input.
+        Note that default input function is a blocking stdin command.
         """
         try:
             msg = input("ftp> ")

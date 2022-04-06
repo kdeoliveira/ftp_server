@@ -28,7 +28,9 @@ def on_send_put(inp : List[str], type: MethodType) -> bytes:
         with open(BASE_DIR + inp[1], "r") as f:
             payload = f.read()
             size = os.path.getsize(BASE_DIR + inp[1])
-    except Exception as e:
+    except IndexError:
+        raise ValueError("invalid command")
+    except Exception:
         raise ValueError("cannot send file")
 
     
@@ -46,12 +48,13 @@ def on_send_put(inp : List[str], type: MethodType) -> bytes:
 
 
 def on_send_get(inp : List[str], type: MethodType) -> bytes:
-    message = Message(3, type)
-
-    file_data = Util.str2bit(inp[1], message.data[1].size, with_count=True)
-    
-    message.parse(file_data)
-    return Util.serialize(message)
+    try:
+        message = Message(3, type)
+        file_data = Util.str2bit(inp[1], message.data[1].size, with_count=True)
+        message.parse(file_data)
+        return Util.serialize(message)
+    except IndexError:
+        raise ValueError("invalid command")
 
 
 def on_send_change(inp : List[str], type: MethodType) -> bytes:
@@ -117,6 +120,7 @@ def on_response_no_change(mesage : Message):
 arg_helper = """usage: tcp_client [-a address] [-p port] [-f base_folder] [-F absolute_folder] [-v | --version] [-h | --help | -?]
 
 This are the commands used:
+\t-d\t\t Activate debug mode
 \t-a address\t\t Set address of this client (default: 127.0.0.1)
 \t-p port\t\t\t Set port number of this client (default: 1025)
 \t-f base_folder\t\t Set relative base path of the FTP client (default: /dir/client)
@@ -129,12 +133,13 @@ if __name__ == "__main__":
 
     cmd.get_args()
 
-    params = cmd.parameters(["-a", "-p", "-f", "-F"])
+    params = cmd.parameters(["-a", "-p", "-f", "-F", "-d"])
 
     if "-f" in params:
         client_dir = params["-f"]
     elif "-F" in params:
         BASE_DIR = params["-F"]
+    
 
 
     client = TcpClient("127.0.0.1", **params)

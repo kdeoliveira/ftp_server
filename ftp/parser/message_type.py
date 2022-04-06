@@ -22,7 +22,7 @@ class RequestType(MethodType):
     Enum class for type of Request sent
 
     get_format(): List[int]
-        returns the format of the given method type
+        returns the format as the number of bits it is expected of the given method type
     """
     PUT = "000"
     GET = "001"
@@ -46,7 +46,7 @@ class ResponseType(MethodType):
     Enum class for type of Response sent
 
     get_format(): List[int]
-        returns the format of the given method type
+        returns the format as the number of bits it is expected of the given method type
     """
     OK_PUT_CHANGE = "000"
     OK_GET = "001"

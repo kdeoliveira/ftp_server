@@ -17,7 +17,7 @@ from ftp.parser.message_type import MessageType, RequestType, ResponseType
 
 class TcpServer():
     _DEFAULT_PORT = 1025
-    _MAX_BUFFER = 1024
+    _MAX_BUFFER = 4096
 
     def __init__(self, ip_addr, **kwargs) -> None:
         """
@@ -33,6 +33,7 @@ class TcpServer():
             new IP address that TCP service will be using
         
         """
+        self._debug = False
         self.thread = None
         self.socket = sok.socket(sok.AF_INET, sok.SOCK_STREAM)
         self.socket.setsockopt(sok.SOL_SOCKET, sok.SO_REUSEADDR, 1)
@@ -41,6 +42,8 @@ class TcpServer():
                 self._DEFAULT_PORT = int(v)
             elif "-a" in k:
                 ip_addr = v
+            elif "-d" in k:
+                self._debug = True
         self.socket.bind( (ip_addr, self._DEFAULT_PORT) )
         self.ip_address = ip_addr
         self.recv_functions : List[Tuple[RequestType, FunctionType]] = []
@@ -61,19 +64,26 @@ class TcpServer():
         """
         self.socket.listen()
         print(self._init_app())
+        if self._debug:
+            print("Debug mode ON")
         while True:
             try:
                 conn, addr = self.socket.accept()
                 self.thread = Thread(target=self.handle_listen, args=(conn, addr))
                 self.is_connected = True
                 self.thread.start()
-                if self.thread:
-                    self.thread.join()
+
+                # For non concurrent connection, join current thread so loop awaits for any active connection to be terminated before connecting any other socket
+                # if self.thread:
+                #     self.thread.join()
             except KeyboardInterrupt:
                     print("Closing server")
                     self.is_connected = False
                     self.socket.close()
                     return
+            except BlockingIOError:
+                print("EAGAIN error")
+                continue
 
         
 
@@ -82,23 +92,29 @@ class TcpServer():
         Internal function that is responsible for parsing any incoming and outgoing message sent to the TCP socket
         """
         print("""> New connection {addr}:{port}""".format(addr = addr[0], port=addr[1]))
+
         while self.is_connected:
             try:
-                # TODO: Socket is only able to receive MAX_BUFFER;
-                #       Therefore, ensure that maximum packet sent is no longer then _MAX_BUFFER or set socket to nonblocking -> socket.setblocking(False)
-                #       Otherwise, wait for any possible subsequent packet receival (parallel or different loop)                
+                # Socket is only able to receive MAX_BUFFER;
+                # Therefore, ensure that maximum packet sent is no longer then _MAX_BUFFER or set socket to nonblocking -> socket.setblocking(False)
+                # Otherwise, wait for any possible subsequent packet receival (parallel or different loop)                
                 data = conn.recv(self._MAX_BUFFER)
                 if not data:
+                    print("Closing connection with:", addr)
                     return None
-                
+                if self._debug:
+                    print("[DEBUG]", data)
                 out = self.parse_packet(data)
-                
+
                 for x in self.recv_functions:
                     if(x[0] == out.type):
-                        conn.sendto(x[1](addr, out), addr)
+                        _data_send = x[1](addr, out)
+                        if self._debug:
+                            print("[DEBUG]", _data_send)
+                        conn.sendto(_data_send, addr)
 
 
-            except BrokenPipeError as e:
+            except (BrokenPipeError, ConnectionResetError) as e:
                 print(e, addr)
             except ValueError:
                 message = Message(3, ResponseType.ERROR_UNKNOWN)
@@ -106,6 +122,7 @@ class TcpServer():
                 conn.sendto( Util.serialize(message) , addr )
             except KeyboardInterrupt:
                 return
+            
 
     def on_receive(self, *args : Callable[[sok.AddressInfo, Message], bytes]):
         """

@@ -64,8 +64,10 @@ def on_receive_put(addr, data : Message) -> bytes:
         with open(BASE_DIR + file_name, "w") as f:
             f.write(result[-1].decode("utf-8").replace(chr(0), ""))
 
-    except Exception as e:
-        raise ValueError()
+    except Exception:
+        # Although no response type is defined for PUT errors in the project description, excpetions may still occur if server has not enough privilege for accessing file or f.write fails.
+        # Sending an ERROR_NO_CHANGE response in case the above issue happends
+        return response_error_no_change()
 
     return response_ok()
 
@@ -75,7 +77,6 @@ def on_receive_get(addr, data : Message) -> bytes:
     result = Util.bit2byte(data)
 
     file_name = BASE_DIR + result[1].decode("utf-8")
-
 
     #Remove embedded null pointer coming from raw data
     file_name = file_name.replace(chr(0), "")
@@ -90,7 +91,6 @@ def on_receive_get(addr, data : Message) -> bytes:
         return response_get(result[1].decode("utf-8").replace(chr(0), ""), size, f)
             
     except Exception as e:
-        print(e)
         return response_error_not_found()
 
 
@@ -120,6 +120,7 @@ def on_receive_help(addr, data : Message) -> bytes:
 arg_helper = """usage: tcp_server [-a address] [-p port] [-f base_folder] [-F absolute_folder] [-v | --version] [-h | --help | -?]
 
 This are the commands used:
+\t-d\t\t Activate debug mode
 \t-a address\t\t Set address of this server (default: 127.0.0.1)
 \t-p port\t\t\t Set port number of this server (default: 1025)
 \t-f base_folder\t\t Set relative base path of the FTP server (default: /dir/server)
@@ -131,7 +132,7 @@ if __name__ == "__main__":
 
     cmd.get_args()
 
-    params = cmd.parameters(["-a", "-p", "-f", "-F"])
+    params = cmd.parameters(["-a", "-p", "-f", "-F", "-d"])
 
     if "-f" in params:
         server_dir = params["-f"]

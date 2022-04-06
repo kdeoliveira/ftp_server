@@ -1,3 +1,14 @@
+##
+# @file arguments.py
+#
+# @brief Parses arguemnts provided in command-line
+#
+#
+# @section author_doxygen_example Author(s)
+# - Created by Kevin de Oliveira on 04/01/2022.
+# - Student ID: 40054907
+#
+# Copyright (c) 2022 Kevin de Oliveira.  All rights reserved.
 
 import sys
 from types import FunctionType
@@ -13,19 +24,14 @@ class ParserArgs:
 
 
     def __init__(self, **kwargs) -> None:
-        """
-        Parse arguments passed in command-line
+        """! 
+        Creates a ParserArgs object
 
-        Parameters
-        ----------
-        helper: str
-            Helper message to be displayed
-        version: str
-            Version message to be displayed 
+        
+        @param helper: str      Helper message to be displayed
+        @param version: str     Version message to be displayed 
 
-        Returns
-        ----------
-        returns: None
+        @return None
         """
         self.argv : list = []
         self.argn : int = 0
@@ -40,18 +46,12 @@ class ParserArgs:
 
         
     def get_args(self, args : List[str] or None = None) -> Tuple[list, int]:
-        """
+        """!
         Get either arguments passed to parameter args or directly from sys.argv
         
-        Parameters
-        ----------
-        args: List[str]
-            List of arguments to be parsed
+        @param args: List[str]      List of arguments to be parsed
 
-        Returns
-        ----------
-        return: Tuple[list, int]
-            Tuple containg arguments and its length
+        @return Tuple[list, int]:   Tuple containg arguments and its length
         """
 
         if args is None or args.__len__ <= 1 :
@@ -69,22 +69,17 @@ class ParserArgs:
 
 
     def parameters(self, format : List[str] or None = None) -> dict:
-        """
+        """!
         List of accepted parameters on command-line
 
-        Paramters
-        ----------
-        format: List[str]
-            List of accepted parameters
+        @param format: List[str]    List of accepted parameters
 
-        Returns 
-        ----------
-        return: dict
-            Dictionary containing paramters and respective values
+        @return dict: Dictionary containing paramters and respective values
         """
         temp = {}
 
         for i,x in enumerate(self.argv):
+            
             if x in self.default_helper:
                 sys.exit(self._helper) if self._helper else 0
             elif x in self.default_version:
@@ -94,9 +89,16 @@ class ParserArgs:
                 sys.exit("unknown option: "+x+"\n"+self._helper)
 
             elif format and x in format and i < self.argn - 1:
-                temp.update({
-                    x: self.argv[i + 1]
-                })
+                try:
+                    temp.update({
+                        x: self.argv[i + 1]
+                    })
+                except IndexError:
+                    temp.update({
+                        x: True
+                    })
+            else:
+                sys.exit("unknown option: "+x+"\n"+self._helper)
             
     
         return temp
