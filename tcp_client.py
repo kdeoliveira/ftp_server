@@ -1,5 +1,16 @@
 #!/usr/bin/python3.8
 
+##
+# @file tcp_client.py
+#
+# @brief Main TCP client application which contains the implementation of the client-end of this FTP service. All protocols and file handling is defined in this file. 
+#
+#
+# @section author_doxygen_example Author(s)
+# - Created by Kevin de Oliveira on 04/01/2022.
+# - Student ID: 40054907
+#
+# Copyright (c) 2022 Kevin de Oliveira.  All rights reserved.
 
 import os
 from ftp.cmd import arguments
@@ -29,6 +40,7 @@ def on_send_put(inp : List[str], type: MethodType) -> bytes:
             payload = f.read()
             size = os.path.getsize(BASE_DIR + inp[1])
     except IndexError:
+        # @brief if exception occurs during parsing of input, return as if the command syntax as invalid
         raise ValueError("invalid command")
     except Exception:
         raise ValueError("cannot send file")
@@ -54,6 +66,7 @@ def on_send_get(inp : List[str], type: MethodType) -> bytes:
         message.parse(file_data)
         return Util.serialize(message)
     except IndexError:
+        # @brief if exception occurs during parsing of input, return as if the command syntax as invalid
         raise ValueError("invalid command")
 
 
@@ -90,6 +103,9 @@ def on_response_get(message: Message) :
             if x.name == file_name:
                 flag = True
         
+        ##
+        # @brief Checks if file already exists
+        #
         if flag:
             ch : str = ''
             while ch not in ["y", "n"]:

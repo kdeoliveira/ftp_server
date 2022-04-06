@@ -1,3 +1,15 @@
+##
+# @file message.py
+#
+# @brief Segment containing the packets for Request and Response messages
+#
+#
+# @section author_doxygen_example Author(s)
+# - Created by Kevin de Oliveira on 04/01/2022.
+# - Student ID: 40054907
+#
+# Copyright (c) 2022 Kevin de Oliveira.  All rights reserved.
+
 import math
 from typing import List, Tuple
 
@@ -9,21 +21,15 @@ from ftp.parser.packet import packet
 
 class Message:
     def __init__(self, header_size : int, type: MethodType) -> None:
-        """
+        """!
         Encapsulates a packet object that is sent to the socket
 
         message is represented as: [header | data_1 | data_2 | ... | payload?]
 
-        Parameters
-        ---
-        header_size: int
-            Size of the header packet
-        type: MethodType
-            Type of message that will be sent
+        @param header_size: int     Size of the header packet
+        @param type: MethodType     Type of message that will be sent
 
-        Returns
-        ---
-        Returns nothing
+        @return Returns None
         """
         self.header = packet(header_size)
         
@@ -44,8 +50,10 @@ class Message:
         
     
     def _token(self, format : List[int]):
-        """
+        """!
         Internal function to include data into the message
+
+        @param format: List[int]       List containing format of each packet encapsulated by this message
         """
         if len(format) == 0:
             return None
@@ -60,17 +68,12 @@ class Message:
         
 
     def parse(self, value : str) -> Tuple[packet, List[packet]] or None:
-        """
+        """!
         Parses input values into its respective data field
 
-        Parameters
-        ---
-        value: str
-            Inserts the values its respective data. Note that value must be represented in binary format
+        @param value: str           Inserts the values its respective data. Note that value must be represented in binary format
 
-        Returns
-        ---
-        Returns a tuple containing the header packet and its data packets
+        @return Tuple or None: An optional tuple containing the header packet and its data packets
         """
         if(value.__len__ == 0 or len(value) > self.size):
             return None
@@ -88,13 +91,12 @@ class Message:
         return (self.header, self.data)
 
     def add_payload(self, value : str) -> None:
-        """
+        """!
         Attach payload to this message
 
-        Parameters
-        ---
-        value: str
-            Value to be parsed into packet. Note that value must be represented in binary format
+        @param value: str       Value to be parsed into packet. Note that value must be represented in binary format
+
+        @return None
         """
         temp = bitarray.util.hex2ba( value.encode("utf-8").hex() ).to01()
 
@@ -102,12 +104,10 @@ class Message:
         self.payload(temp)
 
     def has_payload(self) -> bool:
-        """
+        """!
         Verifies if this message has a payload attached
 
-        Returns
-        ---
-        Returns true if contains a paylaod; otherwise false
+        @return bool: Returns true if contains a paylaod; otherwise false
         """
         return self.payload is not None
 
@@ -130,17 +130,12 @@ class Util:
 
     @staticmethod
     def serialize(msg : Message) -> bytes:
-        """
+        """!
         Serializes a Message object into bytes following its binary representation
 
-        Parameters
-        ---
-        msg: Message
-            Message object
+        @param msg: Message     Message object
         
-        Returns
-        ---
-        Returns the extended byte representation of that message object
+        @return bytes:          Returns the extended byte representation of that message object
         """
         binary : bitarray.bitarray = bitarray.bitarray(endian="big")
         
@@ -165,19 +160,13 @@ class Util:
 
     @staticmethod
     def deserialize(binary : bytes, type : MessageType) -> Message:
-        """
+        """!
         Deserialize the byte value into a Message object
 
-        Parameters
-        ---
-        binary: bytes
-            Input byte object to be deserialized
-        type: MessageType
-            Type of message that is to be deserialized
+        @param  binary: bytes       Input byte object to be deserialized
+        @param  type: MessageType   Type of message that is to be deserialized
         
-        Returns
-        ---
-        Returns a message object        
+        @return Message:            Returns a message object        
         """
 
         temp : bitarray.bitarray = util.deserialize(binary)
@@ -224,26 +213,18 @@ class Util:
 
     @staticmethod
     def str2bit(val : str, size : int, with_count : bool = True, size_count : int or None = None ) -> str:
-        """
-        Converts a string value its equivalent binary representation in utf-8 encoding
+        """!
+        Converts a string value its equivalent binary representation in utf-8 encoding.
 
-        Note that python does not use standard representation of variable size
-        Hence, manual conversion should be done
+        Note that python does not use standard representation of variable size.
+        Hence, manual conversion should be done.
 
-        Parameters
-        ---
-        val: str
-            String to be converted
-        size: int
-            Size of the expected binary value
-        with_count: bool
-            Attach the binary represented size of paramters val
-        size_count: int
-            Size of the binary represented value for the portion representing the size of val
+        @param val: str         String to be converted
+        @param size: int        Size of the expected binary value
+        @param with_count: bool Attach the binary represented size of paramters val
+        @param size_count: int  Size of the binary represented value for the portion representing the size of val
         
-        Returns 
-        ---
-        Retuns a binary representation of the value passed
+        @return str:            Retuns a binary representation of the value passed
         """
         val = val.strip()
 
@@ -274,17 +255,12 @@ class Util:
             return data
     @staticmethod
     def bit2byte(msg : Message) -> List[bytes]:
-        """
+        """!
         Converts a Message object to a list of byte equivalent values
 
-        Parameters
-        ---
-        msg: Message
-            Message object to be converted
+        @param msg: Message     Message object to be converted
         
-        Returns
-        ---
-        List of bytes containing all packets encapsulated by the Message object
+        @return List[bytes]:    List of bytes containing all packets encapsulated by the Message object
         """
         temp : list[bytes] = []
         for x in msg.data:

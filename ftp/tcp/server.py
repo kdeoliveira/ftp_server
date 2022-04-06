@@ -1,6 +1,14 @@
-"""
-TCP socket interface representing FTP server
-"""
+##
+# @file server.py
+#
+# @brief TCP Server logic and algorithm
+#
+#
+# @section author_doxygen_example Author(s)
+# - Created by Kevin de Oliveira on 04/01/2022.
+# - Student ID: 40054907
+#
+# Copyright (c) 2022 Kevin de Oliveira.  All rights reserved.
 
 from ast import arg
 import pickle
@@ -20,18 +28,14 @@ class TcpServer():
     _MAX_BUFFER = 4096
 
     def __init__(self, ip_addr, **kwargs) -> None:
-        """
+        """!
         TCP Server interface that creates a new socket given the ip address provided for FTP communication purposes
 
-        Parameters
-        ---
-        ip_addr: str
-            IP address which the TCP service would be listening to
-        -p: int
-            port value which socket will bind its connection
-        -a: str
-            new IP address that TCP service will be using
-        
+        @param ip_addr: str     IP address which the TCP service would be listening to
+        @param -p: int          Port value which socket will bind its connection
+        @param -a: str          IP address that TCP service will be using
+
+        @return TcpServer
         """
         self._debug = False
         self.thread = None
@@ -51,7 +55,7 @@ class TcpServer():
         self.is_connected = False
 
     def _init_app(self) -> str:
-        """
+        """!
         Initial message printed into command-line when TCP service is initiated
         """
         return """-- FTP Server initializing on {ip}:{port}
@@ -59,8 +63,10 @@ class TcpServer():
 -- README contains a list of available commands and some concepts guiding""".format(ip = self.ip_address, port = self._DEFAULT_PORT)
 
     def listen(self):
-        """
+        """!
         Starts a new threded TCP service by connecting to the respective server.
+
+        @return None
         """
         self.socket.listen()
         print(self._init_app())
@@ -88,8 +94,10 @@ class TcpServer():
         
 
     def handle_listen(self, conn : sok.socket, addr : sok.AddressInfo):
-        """
+        """!
         Internal function that is responsible for parsing any incoming and outgoing message sent to the TCP socket
+        
+        @return None
         """
         print("""> New connection {addr}:{port}""".format(addr = addr[0], port=addr[1]))
 
@@ -125,30 +133,22 @@ class TcpServer():
             
 
     def on_receive(self, *args : Callable[[sok.AddressInfo, Message], bytes]):
-        """
+        """!
         Attach a callback that is called when a message is received
 
-        Parameters
-        ---
-        *args: List[Callable[[sok.AddressInfo, Message], bytes]]
-            List of callable objects containing its Method type and respective callback function
+        @param *args: List[Callable[[sok.AddressInfo, Message], bytes]] List of callable objects containing its Method type and respective callback function
         """
         for x in args:
             self.recv_functions.append(x)
 
     @staticmethod
     def parse_packet(data : bytes) -> Message:
-        """
+        """!
         Deserializes incoming byte received by the TCP socket
 
-        Parameters
-        ---
-        data: bytes
-            Byte object received by socket
+        @param data: bytes  Byte object received by socket
 
-        Returns
-        ---
-        Message object
+        @return Message: object
         """
         return Util.deserialize(data, MessageType.REQUEST)
 

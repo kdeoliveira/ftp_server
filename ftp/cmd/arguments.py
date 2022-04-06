@@ -31,7 +31,7 @@ class ParserArgs:
         @param helper: str      Helper message to be displayed
         @param version: str     Version message to be displayed 
 
-        @return None
+        @return ParserArgs
         """
         self.argv : list = []
         self.argn : int = 0

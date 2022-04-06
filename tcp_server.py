@@ -1,6 +1,18 @@
 #!/usr/bin/python3.8
-from io import BytesIO
-import locale
+
+##
+# @file tcp_server.py
+#
+# @brief Main TCP server application which contains the implementation of the server-end of this FTP service. All protocols and file handling is defined in this file. 
+#
+#
+# @section author_doxygen_example Author(s)
+# - Created by Kevin de Oliveira on 04/01/2022.
+# - Student ID: 40054907
+#
+# Copyright (c) 2022 Kevin de Oliveira.  All rights reserved.
+
+
 import os
 from re import S
 from socket import socket
@@ -16,8 +28,6 @@ server_dir = "server"
 
 
 BASE_DIR = os.getcwd() + os.sep + "dir" + os.sep + server_dir + os.sep
-
-
 
 
 def response_ok() -> bytes:
@@ -65,7 +75,7 @@ def on_receive_put(addr, data : Message) -> bytes:
             f.write(result[-1].decode("utf-8").replace(chr(0), ""))
 
     except Exception:
-        # Although no response type is defined for PUT errors in the project description, excpetions may still occur if server has not enough privilege for accessing file or f.write fails.
+        # @brief Although no response type is defined for PUT errors in the project description, excpetions may still occur if server has not enough privilege for accessing file or f.write fails.
         # Sending an ERROR_NO_CHANGE response in case the above issue happends
         return response_error_no_change()
 
@@ -78,7 +88,7 @@ def on_receive_get(addr, data : Message) -> bytes:
 
     file_name = BASE_DIR + result[1].decode("utf-8")
 
-    #Remove embedded null pointer coming from raw data
+    # @brief Remove embedded null pointer coming from raw data
     file_name = file_name.replace(chr(0), "")
 
     

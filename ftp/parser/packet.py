@@ -1,3 +1,14 @@
+##
+# @file Packet.py
+#
+# @brief Packet object containing bit array
+#
+#
+# @section author_doxygen_example Author(s)
+# - Created by Kevin de Oliveira on 04/01/2022.
+# - Student ID: 40054907
+#
+# Copyright (c) 2022 Kevin de Oliveira.  All rights reserved.
 
 import bitarray
 
@@ -6,15 +17,13 @@ class packet:
         
 
     def __init__(self, max_bits : int, fill : bool = False, *args) -> None:
-        """
+        """!
         Object representing a packet as binary
 
-        Parameters
-        ---
-        max_bits: int
-            Maximum size of this packet object
-        fill: bool
-            Align the length of this packet to a multiple of 8 (1 byte)
+        @param max_bits: int    Maximum size of this packet object
+        @param fill: bool       Align the length of this packet to a multiple of 8 (1 byte)
+
+        @return packet
         """
         self.body = bitarray.bitarray(max_bits)
         self.size = max_bits
@@ -25,16 +34,12 @@ class packet:
 
 
     def __call__(self, val : str) -> 'packet':
-        """
+        """!
         Append value to this object
 
-        Parameters
-        ---
-        val: str
-            Value to be appended
-        Returns
-        ---
-        self
+        @param val: str Value to be appended
+        
+        @return packet
         """
         if len(val) != self.size:
             raise ValueError("Incorrect size provided")
@@ -43,34 +48,29 @@ class packet:
         return self
 
     def value(self) -> bitarray.bitarray:
-        """
+        """!
         Getter of the body attribute
 
-        Returns
-        ---
-        Bitarray object
+        @return Bitarray object
         """
         return self.body
 
     def to_bytes(self) -> bytes:
-        """
+        """!
         Returns the byte value of the body attribute
 
-        Returns
-        ---
-        Byte object
+        @return Byte object
         """
         return self.body.tobytes()
 
 
     def set_size(self, val: int) -> None:
-        """
+        """!
         Redefine the packet object size
 
-        Parameters
-        ---
-        val: int
-            Size of this packet object
+        @param val: int Size of this packet object
+
+        @return None
         """
         self.body = bitarray.bitarray(val)
         self.body.clear()

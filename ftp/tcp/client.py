@@ -1,13 +1,20 @@
-"""
-TCP socket interface representing FTP client
-"""
+##
+# @file client.py
+#
+# @brief TCP Client logic and algorithm
+#
+#
+# @section author_doxygen_example Author(s)
+# - Created by Kevin de Oliveira on 04/01/2022.
+# - Student ID: 40054907
+#
+# Copyright (c) 2022 Kevin de Oliveira.  All rights reserved.
 
 import socket as sok
 import sys
 from threading import Thread
 from types import FunctionType
 from typing import Callable, List, Optional, Tuple
-from unittest import result
 from ftp.parser.message import Message, Util
 
 from ftp.parser.message_type import MessageType, MethodType, RequestType, ResponseType
@@ -22,18 +29,14 @@ class TcpClient():
     _MAX_BUFFER = 4096
 
     def __init__(self, ip_addr, **kwargs) -> None:
-        """
+        """!
         TCP Client interface that creates a new socket given the ip address provided for FTP communication
 
-        Parameters
-        ---
-        ip_addr: str
-            IP address which the TCP service would be listening to
-        -p: int
-            port value which socket will bind its connection
-        -a: str
-            new IP address that TCP service will be using
-        
+        @param ip_addr: str     IP address which the TCP service would be listening to
+        @param -p: int          Port value which socket will bind its connection
+        @param -a: str          IP address that TCP service will be using
+
+        @return TcpClient
         """
         self._debug = False
         self.thread = None
@@ -55,9 +58,11 @@ class TcpClient():
 
 
     def connect(self):
-        """
+        """!
         Creates a TCP socket bounded to the given IP address and port provided. 
-        Object creates a new thread where each new connection will respond to
+        Object creates a new thread where each new connection will respond to.
+
+        @return None
         """
         try:
             
@@ -69,7 +74,7 @@ class TcpClient():
                 self.thread.join()
 
         except ConnectionRefusedError:
-            #Implement timeout or repetition
+            # @brief Implement timeout or repetition
             print("Unable to connect to server, try again")
         except KeyboardInterrupt:
             self.socket.close()
@@ -79,9 +84,11 @@ class TcpClient():
 
     
     def handle_connection(self):
-        """
+        """!
         Internal function which handles all single client-server communication
         Method is responsible for parsing any incoming and outgoing message sent through the TCP socket
+
+        @return None
         """
         lcls = locals()
         cmd_format : RequestType or None = None
@@ -92,7 +99,7 @@ class TcpClient():
                 msg = self.cin()
                 if len(msg):
                     try:
-                        # Dynamically converts the input string to local MethodType variable 
+                        # @brief Dynamically converts the input string to local MethodType variable 
                         exec("cmd_format_lcls = RequestType.%s" % msg[0].upper(), globals(), lcls)
                         cmd_format = lcls["cmd_format_lcls"]
                         for x in self.create_message_functions:
@@ -103,9 +110,7 @@ class TcpClient():
 
                                 self.socket.send( _data_send )
                     except (AttributeError ,SyntaxError, IndexError) as e:
-                        # print("Invalid message:", e)
-                        # self.socket.send not necessary as the client application should be aware of the supported commands (eg. offline)
-                        # However, due to requirements empty message is sent
+                        # @brief self.socket.send not necessary as the client application should be aware of the supported commands (eg. offline). However, due to requirements empty message is sent.
                         if msg[0] == "bye":
                             raise KeyboardInterrupt()
 
@@ -119,7 +124,7 @@ class TcpClient():
                         print(e)
                         continue
                     
-                    # Socket is only able to receive MAX_BUFFER;
+                    # @brief Socket is only able to receive MAX_BUFFER;
                     # In order to guarantee efficiency of sockets, longer buffers will be stripped to fit the maximum sendable buffer size
                     # Therefore, ensure that maximum packet sent is no longer then _MAX_BUFFER or set socket to nonblocking -> socket.setblocking(False)
                     # Otherwise, wait for any possible subsequent packet receival (parallel or different loop)
@@ -143,54 +148,49 @@ class TcpClient():
             except (KeyboardInterrupt, OSError):
                 return
             except ValueError as e:
-                #TODO: In case of large incming packet, self.socke.recv will raise an Exception for invalid header byte
+                #@brief In case of large incming packet, self.socke.recv will raise an Exception for invalid header byte
                 print("invalid response", e)
 
     def check_response(self, data : bytes) -> Message:
-        """
+        """!
         Deserialize the incoming message
 
-        Parameters
-        ---
-        data: bytes
-            Byte object received by the socket
+        @param data: bytes  Byte object received by the socket
         
-        Returns
-        ---
-        Deserialized message object
+        @return Deserialized message object
         """
         return Util.deserialize(data, MessageType.RESPONSE)
 
 
     def on_send(self, *args: Tuple[ MethodType ,Callable[[List[str], MethodType], bytes]]):
-        """
+        """!
         Attach a callback that is called when a message is sent
 
-        Parameters
-        ---
-        *args: List[Tuple[ MethodType ,Callable[[List[str], MethodType], bytes]]]
-            List of callable objects containing its Method type and respective callback function
+        @param *args: List[Tuple[ MethodType ,Callable[[List[str], MethodType], bytes]]]    List of callable objects containing its Method type and respective callback function
+
+        @return None
         """
         for x in args:
             self.create_message_functions.append(x)
 
     def on_response(self, *args: Tuple[MethodType,  Callable[[Message], None ]] ):
-        """
+        """!
         Attach a callback that is called when a message is received
 
-        Parameters
-        ---
-        *args: List[Tuple[MethodType,  Callable[[Message], None ]]]
-            List of callable objects containing its Method type and respective callback function
+        @param *args: List[Tuple[MethodType,  Callable[[Message], None ]]]  List of callable objects containing its Method type and respective callback function
+
+        @return None
         """
         for x in args:
             self.on_response_functions.append(x)
 
 
     def cin(self) -> List[str]:
-        """
+        """!
         Reads stdin from command-line. By default prints 'ftp>' before reading input.
         Note that default input function is a blocking stdin command.
+
+        @return List[str] List of message inputs
         """
         try:
             msg = input("ftp> ")
@@ -201,7 +201,7 @@ class TcpClient():
 
 
     def handler(self, signum , frame):
-        """
+        """!
         Internal funtion used to define a signal handler that is called when a SIGINT signal is raised by this process
         """
         

@@ -24,9 +24,7 @@ Before execution, make sure the main directory for both server and client are cr
 To run the server: ``tcp_server.py``  
 To run the client: ``tcp_client.py``  
 
-The list of available commands can be found by passing any of those help arguments ``-h`` ``--help`` ``-?``  
-
-Below you can find the set of arguments available for both applications.
+The list of available commands can be found by passing any of those help arguments ``-h`` ``--help`` ``-?``. Below you can find the set of arguments available for both applications.
 
 - -d: Activate Debug mode
 - -a `addr`: Address which socket should connect to. Default value is localhost (127.0.0.1)
