@@ -169,6 +169,7 @@ class Util:
         @return Message:            Returns a message object        
         """
 
+
         temp : bitarray.bitarray = util.deserialize(binary)
         
         if type == MessageType.REQUEST:
@@ -182,6 +183,7 @@ class Util:
                 pk(temp.to01()[msg.size:])
                 msg.payload = pk
             else:
+                
                 msg.parse(
                     temp.to01()[3:]
                 )
