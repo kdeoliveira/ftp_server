@@ -35,10 +35,11 @@ def response_ok() -> bytes:
     message.parse("00000")
     return Util.serialize(message)
 
-def response_get(file_name : str, size : int, payload: str) -> bytes:
+def response_get(file_name : str, size : int, payload: bytes) -> bytes:
     message = Message(3, ResponseType.OK_GET)
     file_data = Util.str2bit(file_name, ResponseType.OK_GET.get_format()[1], with_count=True)
     file_size = bitarray.util.int2ba(size, length=32, endian="big").to01()
+    
     message.parse(
     file_data + file_size
     )
@@ -71,10 +72,11 @@ def on_receive_put(addr, data : Message) -> bytes:
     file_name = result[1].decode("utf-8").replace(chr(0), "")
 
     try:
-        with open(BASE_DIR + file_name, "w") as f:
-            f.write(result[-1].decode("utf-8").replace(chr(0), ""))
+        with open(BASE_DIR + file_name, "wb") as f:
+            f.write(result[-1])
 
-    except Exception:
+    except Exception as e:
+        print(e)
         # @brief Although no response type is defined for PUT errors in the project description, excpetions may still occur if server has not enough privilege for accessing file or f.write fails.
         # Sending an ERROR_NO_CHANGE response in case the above issue happends
         return response_error_no_change()
@@ -94,7 +96,7 @@ def on_receive_get(addr, data : Message) -> bytes:
     
 
     try:
-        with open(file_name, "r") as open_file:
+        with open(file_name, "rb") as open_file:
             f = open_file.read()
             size = os.path.getsize(file_name)
             

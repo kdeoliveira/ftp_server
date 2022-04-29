@@ -90,7 +90,7 @@ class Message:
 
         return (self.header, self.data)
 
-    def add_payload(self, value : str) -> None:
+    def add_payload(self, value : str or bytes, encode : str = "utf-8" or "bytes") -> None:
         """!
         Attach payload to this message
 
@@ -98,7 +98,7 @@ class Message:
 
         @return None
         """
-        temp = bitarray.util.hex2ba( value.encode("utf-8").hex() ).to01()
+        temp = bitarray.util.hex2ba( value.hex() ).to01()
 
         self.payload = packet(len(temp))
         self.payload(temp)

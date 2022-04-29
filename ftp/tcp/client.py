@@ -26,7 +26,7 @@ import signal
 
 class TcpClient():
     _DEFAULT_PORT = 1025
-    _MAX_BUFFER = 4096
+    _MAX_BUFFER = 65574
 
     def __init__(self, ip_addr, **kwargs) -> None:
         """!
@@ -108,6 +108,9 @@ class TcpClient():
                                 if self._debug:
                                     print("[DEBUG]", _data_send)
 
+                                if len(_data_send) > self._MAX_BUFFER:
+                                    raise ValueError("error: size of message is bigger than the maximum allowed of 64 Kb")
+
                                 self.socket.send( _data_send )
                     except (AttributeError ,SyntaxError, IndexError) as e:
                         # @brief self.socket.send not necessary as the client application should be aware of the supported commands (eg. offline). However, due to requirements empty message is sent.
@@ -128,8 +131,8 @@ class TcpClient():
                     # In order to guarantee efficiency of sockets, longer buffers will be stripped to fit the maximum sendable buffer size
                     # Therefore, ensure that maximum packet sent is no longer then _MAX_BUFFER or set socket to nonblocking -> socket.setblocking(False)
                     # Otherwise, wait for any possible subsequent packet receival (parallel or different loop)
-                                
                     recv = self.socket.recv(self._MAX_BUFFER)
+
 
                     if self._debug:
                         print("[DEBUG]", recv)

@@ -36,13 +36,13 @@ def on_send_put(inp : List[str], type: MethodType) -> bytes:
     message = Message(3, type)
 
     try:
-        with open(BASE_DIR + inp[1], "r") as f:
+        with open(BASE_DIR + inp[1], "rb") as f:
             payload = f.read()
             size = os.path.getsize(BASE_DIR + inp[1])
     except IndexError:
         # @brief if exception occurs during parsing of input, return as if the command syntax as invalid
         raise ValueError("invalid command")
-    except Exception:
+    except Exception as e:
         raise ValueError("cannot send file")
 
     
@@ -53,9 +53,13 @@ def on_send_put(inp : List[str], type: MethodType) -> bytes:
     file_data + file_size
     )
 
+    
     message.add_payload(payload)
 
+    
 
+    
+    
     return Util.serialize(message)
 
 
@@ -96,7 +100,7 @@ def on_response_get(message: Message) :
     val = Util.bit2byte(message)
 
     file_name = val[1].decode("utf-8").replace(chr(0), "")
-
+    ch : str = ''
     with os.scandir(BASE_DIR) as dir:
         flag : bool = False
         for x in dir:
@@ -106,14 +110,14 @@ def on_response_get(message: Message) :
         ##
         # @brief Checks if file already exists
         #
+
         if flag:
-            ch : str = ''
             while ch not in ["y", "n"]:
                 ch = input(file_name + " already exists. Do you want to overwrite? (y/n) ")
     try:
-        if ch == "y":
-            with open(BASE_DIR + file_name, "w") as f:
-                f.write(val[-1].decode("utf-8").replace(chr(0), ""))
+        if ch == "y" or not flag:
+            with open(BASE_DIR + file_name, "wb") as f:
+                f.write(val[-1])
 
     except Exception as e:
         print(e)

@@ -25,7 +25,7 @@ from ftp.parser.message_type import MessageType, RequestType, ResponseType
 
 class TcpServer():
     _DEFAULT_PORT = 1025
-    _MAX_BUFFER = 4096
+    _MAX_BUFFER = 65574
 
     def __init__(self, ip_addr, **kwargs) -> None:
         """!
@@ -119,7 +119,8 @@ class TcpServer():
                         _data_send = x[1](addr, out)
                         if self._debug:
                             print("[DEBUG]", _data_send)
-                        conn.sendto(_data_send, addr)
+                        
+                        conn.sendto(_data_send[:self._MAX_BUFFER], addr)
 
 
             except (BrokenPipeError, ConnectionResetError) as e:
